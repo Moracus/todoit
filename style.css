@@ -1,0 +1,29 @@
+body {
+    background-color: black;
+    font-family: 'Roboto', sans-serif;
+}
+
+.task-container {
+    font-family: 'Roboto', sans-serif;
+    max-width: 600px;
+    margin: 50px auto 20px auto;
+    background-color: #ffffff00;
+    padding: 20px;
+    border-radius: 5px;
+    border: 2px solid white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.heading {
+    font-family: 'Roboto', sans-serif;
+    font-style: italic;
+}
+
+.material-symbols-outlined.md-50{
+    font-size: 0.7em;
+}
