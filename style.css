@@ -1,6 +1,10 @@
 body {
+    min-height: 100vh;
     background-color: black;
     font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+   
 }
 
 .task-container {
@@ -23,7 +27,9 @@ ul {
     font-family: 'Roboto', sans-serif;
     font-style: italic;
 }
-
+.footer{
+margin: auto auto;
+}
 .material-symbols-outlined.md-50{
     font-size: 0.7em;
 }

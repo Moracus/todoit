@@ -35,20 +35,3 @@ taskContainer.addEventListener('change', (e) => {
         }
     }
 })
-
-
-function check() {
-    let checkbox = document.querySelector(".form-check-input");
-    const taskList = document.getElementById('taskList');
-    if (checkbox.checked) {
-        // delete the li in the taskList this checkbox was present in, 
-        // Find the closest li element containing the checked checkbox
-        let liToRemove = checkbox.closest('li');
-
-        // Check if the checkbox is within an li element
-        if (liToRemove) {
-            // Remove the li element from the taskList
-            taskList.removeChild(liToRemove);
-        }
-    }
-}
