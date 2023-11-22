@@ -64,8 +64,9 @@ taskContainer.addEventListener('change', (e) => {
             })
             console.log(tasks)
             // save the updated task array
-            localStorage.setItem('tasks', JSON.stringify(tasks));
+            
             taskList.removeChild(liToRemove);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
         }
     }
 })
