@@ -41,3 +41,11 @@ margin: auto auto;
 .form-check-input{
     border: 2px solid black;
 }
+.subhead:hover{
+    cursor: pointer;
+    opacity: 1;
+}
+.fade-it{
+    opacity: 0.28;
+    transition: 0.3s;
+}

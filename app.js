@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-
     const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
     displayTasks(savedTasks)
 
@@ -95,3 +94,14 @@ function displayTasks(tasks) {
         noTasks.style.display = 'none';
     }
 }
+let toText = document.querySelector("#to")
+let itText = document.querySelector("#it");
+itText.addEventListener("mouseover",()=>{
+    itText.style.opacity = '1'
+    toText.style.opacity = '0.28'
+});
+toText.addEventListener("mouseover",()=>{
+    toText.style.opacity = '1'
+    itText.style.opacity = '0.28'
+    itText.style.transition = '0.3s'
+});
