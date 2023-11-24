@@ -4,40 +4,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
 })
 const taskContainer = document.querySelector(".task-container");
-taskContainer.addEventListener('keyup',(e)=>{
-    if(e.key==="Enter"&& e.target.classList.contains('task-box')){
+taskContainer.addEventListener('keyup', (e) => {
+    if (e.key === "Enter" && e.target.classList.contains('task-box')) {
         addTask();
     }
 })
 function addTask() {
+
     let noTasks = document.querySelector(".noTasks")
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     const taskList = document.querySelector('#taskList');//ul
     noTasks.style.display = 'none';
     const newLi = document.createElement('li');
-    newLi.innerHTML = `<div class="input-group mb-3">
+    newLi.innerHTML = `<div class="input-group mb-3 list-item">
         <div class="input-group-text">
             <input class="form-check-input mt-0" type="checkbox" value=""
                 aria-label="Checkbox for following text input">
         </div>
         <input type="text" class="form-control task-box" aria-label="Text input with checkbox"
             placeholder="New Task">
+        <span class ="grip-vertical" ><img src = "icons/grip-vertical.svg" alt = "grip-vertical"/></span>
         </div>`
-        // Get the input element within the new li
+    newLi.draggable = true
+    newLi.classList.add("item")
+    // Get the input element within the new li
 
     // Set focus on the input element
 
     taskList.appendChild(newLi)
     const taskBox = newLi.querySelector('.task-box');
     taskBox.focus();
+    // drag and reorder
+    dragOrder();
+
+
 
 
     const inputTextList = document.querySelectorAll('.task-box')
     let requiredIndex = inputTextList.length - 2;
-    if(inputTextList[requiredIndex]){
+    if (inputTextList[requiredIndex]) {
         let toPush = inputTextList[requiredIndex].value;
-        if(tasks[tasks.length-1]!==toPush)
-        tasks.push(toPush);
+        if (tasks[tasks.length - 1] !== toPush)
+            tasks.push(toPush);
 
     }
     // save the updated array to localstorage
@@ -63,7 +71,7 @@ taskContainer.addEventListener('change', (e) => {
             })
             console.log(tasks)
             // save the updated task array
-            
+
             taskList.removeChild(liToRemove);
             localStorage.setItem('tasks', JSON.stringify(tasks));
         }
@@ -76,32 +84,72 @@ function displayTasks(tasks) {
         const li = document.createElement('li');
         // console.log(task);
         li.innerHTML = `
-        <div class="input-group mb-3">
+        <div class="input-group mb-3 list-item">
             <div class="input-group-text">
                 <input class="form-check-input mt-0" type="checkbox"  value="" aria-label="Checkbox for following text input">
             </div>
             <input type="text" class="form-control task-box" aria-label="Text input with checkbox" placeholder="New Task"
             value = "${task}">
+            <span class ="grip-vertical" ><img src = "icons/grip-vertical.svg" alt = "grip-vertical"/></span>
+            
         </div>
     `;
 
         taskList.appendChild(li);
+        li.draggable = true
+        li.classList.add("item")
+        dragOrder();
+
     });
-    if(tasks.length===0){
+    if (tasks.length === 0) {
         noTasks.style.display = 'block';
     }
-    else{
+    else {
         noTasks.style.display = 'none';
     }
 }
+
+// hover 
 let toText = document.querySelector("#to")
 let itText = document.querySelector("#it");
-itText.addEventListener("mouseover",()=>{
+itText.addEventListener("mouseover", () => {
     itText.style.opacity = '1'
     toText.style.opacity = '0.28'
 });
-toText.addEventListener("mouseover",()=>{
+toText.addEventListener("mouseover", () => {
     toText.style.opacity = '1'
     itText.style.opacity = '0.28'
     itText.style.transition = '0.3s'
 });
+function dragOrder() {
+    // drag and reorder
+    const taskList = document.querySelector('#taskList')
+    const items = taskList.querySelectorAll(".item");
+    items.forEach((item) => {
+        item.addEventListener('dragstart', () => {
+            //Adding dragging class to item after a delay
+            setTimeout(() => item.classList.add("dragging"), 0);
+        })
+        item.addEventListener('dragend', () => {
+            item.classList.remove('dragging');
+
+        })
+
+    });
+    const intisortableList = (e) => {
+        const draggingItem = taskList.querySelector(".dragging");//getting the current dragging element
+        e.preventDefault()
+        //siblings will be an array containing all the elements with the-
+        // class item within taskList, excluding those with the class dragging. 
+        const siblings = [...taskList.querySelectorAll(".item:not(.dragging)")];
+        // finding the sibling after which the dragging item should be placed
+        let nextSibling = siblings.find(sibling => {
+            return e.clientY <= sibling.offsetTop + sibling.offsetHeight / 2;
+        })
+        taskList.insertBefore(draggingItem, nextSibling);
+
+    }
+    taskList.addEventListener("dragover", intisortableList);
+    taskList.addEventListener("dragenter", (e)=>e.preventDefault());
+
+}
