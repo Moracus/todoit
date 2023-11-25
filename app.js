@@ -123,6 +123,7 @@ toText.addEventListener("mouseover", () => {
 });
 function dragOrder() {
     // drag and reorder
+    let savedTasks = JSON.parse(localStorage.getItem('tasks'))||[];
     const taskList = document.querySelector('#taskList')
     const items = taskList.querySelectorAll(".item");
     items.forEach((item) => {
@@ -147,9 +148,22 @@ function dragOrder() {
             return e.clientY <= sibling.offsetTop + sibling.offsetHeight / 2;
         })
         taskList.insertBefore(draggingItem, nextSibling);
+        // update the saved array
+        updateLocalStorage();
+
 
     }
     taskList.addEventListener("dragover", intisortableList);
-    taskList.addEventListener("dragenter", (e)=>e.preventDefault());
+    taskList.addEventListener("dragenter", (e) => e.preventDefault());
 
+}
+function updateLocalStorage(){
+    localStorage.clear();
+    let savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    let updatedTasks = [...document.querySelectorAll('.task-box')];
+    for(let i =0; i<updatedTasks.length;i++){
+        savedTasks[i]= updatedTasks[i].value;
+    }
+    localStorage.setItem('tasks',JSON.stringify(savedTasks));
+    
 }
