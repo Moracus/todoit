@@ -18,6 +18,11 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+hr{
+    opacity: 1;
+    border-top: 1px solid white;
+}
+
 .task-box {
     border: none;
 }
@@ -77,11 +82,19 @@ ul {
 }
 
 .item.dragging :where(.list-item, .grip-vertical) {
-    opacity: 0;
+    opacity: 0.6;
 }
-.btn{
+
+.btn {
+    transition: 0.3s;
     border: 2px solid white;
     background-color: black;
     border-radius: 10px;
 
+}
+.btn:hover{
+    border-width:2px 2px 4px 4px;
+    border-style: solid;
+    border-color: white;
+    transition: 0.3s;
 }

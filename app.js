@@ -9,24 +9,52 @@ taskContainer.addEventListener('keyup', (e) => {
         addTask();
     }
 })
-function addTask() {
+const listDropdown = document.querySelector("#listDropdown")
+listDropdown.addEventListener('change', listChange);
+function listChange() {
+    // console.log("heloooooo")
+    const selectedValue = listDropdown.value;
+    if (selectedValue === 'add') {
+        const newListName = prompt("Enter the name of this list: ");
+        if (newListName) {
+            const newListOption = document.createElement('option');
+            newListOption.value = newListName;
+            newListOption.text = newListName;
+            newListOption.classList.add("super-list")
+            // push the option at current index below and replace
+            // it with new option
+            listDropdown.add(newListOption, listDropdown.options[1]);
+            listDropdown.value = newListName;
+            updateLocalStorage('allLists','.super-list')
+        }
+    }
 
+}
+function newListItem(value = "") {
+    const newLi = document.createElement('li');
+    newLi.innerHTML = `<div class="input-group mb-3 list-item">
+    <div class="input-group-text">
+        <input class="form-check-input mt-0" type="checkbox" value=""
+            aria-label="Checkbox for following text input">
+    </div>
+    <input type="text" class="form-control task-box" aria-label="Text input with checkbox"
+        placeholder="New Task">
+    <span class ="grip-vertical" ><img src = "icons/grip-vertical.svg" alt = "grip-vertical"/></span>
+    </div>`
+    newLi.draggable = true
+    newLi.classList.add("item")
+    return newLi;
+
+}
+function addTask() {
+    let addTaskBtn = document.querySelector(".btn")
     let noTasks = document.querySelector(".noTasks")
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     const taskList = document.querySelector('#taskList');//ul
     noTasks.style.display = 'none';
-    const newLi = document.createElement('li');
-    newLi.innerHTML = `<div class="input-group mb-3 list-item">
-        <div class="input-group-text">
-            <input class="form-check-input mt-0" type="checkbox" value=""
-                aria-label="Checkbox for following text input">
-        </div>
-        <input type="text" class="form-control task-box" aria-label="Text input with checkbox"
-            placeholder="New Task">
-        <span class ="grip-vertical" ><img src = "icons/grip-vertical.svg" alt = "grip-vertical"/></span>
-        </div>`
-    newLi.draggable = true
-    newLi.classList.add("item")
+    let newLi = newListItem();
+
+
     // Get the input element within the new li
 
     // Set focus on the input element
@@ -37,9 +65,7 @@ function addTask() {
     // drag and reorder
     dragOrder();
 
-
-
-
+    // updating local storage
     const inputTextList = document.querySelectorAll('.task-box')
     let requiredIndex = inputTextList.length - 2;
     if (inputTextList[requiredIndex]) {
@@ -48,6 +74,7 @@ function addTask() {
             tasks.push(toPush);
 
     }
+
     // save the updated array to localstorage
     localStorage.setItem('tasks', JSON.stringify(tasks));
 
@@ -81,27 +108,15 @@ function displayTasks(tasks) {
     let noTasks = document.querySelector(".noTasks")
     const taskList = document.querySelector('#taskList');
     tasks.forEach(task => {
-        const li = document.createElement('li');
-        // console.log(task);
-        li.innerHTML = `
-        <div class="input-group mb-3 list-item">
-            <div class="input-group-text">
-                <input class="form-check-input mt-0" type="checkbox"  value="" aria-label="Checkbox for following text input">
-            </div>
-            <input type="text" class="form-control task-box" aria-label="Text input with checkbox" placeholder="New Task"
-            value = "${task}">
-            <span class ="grip-vertical" ><img src = "icons/grip-vertical.svg" alt = "grip-vertical"/></span>
-            
-        </div>
-    `;
-
+        const li = newListItem(); // returns new li element
+        li.querySelector('.task-box').value = task;
         taskList.appendChild(li);
         li.draggable = true
         li.classList.add("item")
         dragOrder();
 
     });
-    if (tasks.length === 0) {
+    if (tasks.length === 1 || tasks.length === 0) {
         noTasks.style.display = 'block';
     }
     else {
@@ -123,7 +138,7 @@ toText.addEventListener("mouseover", () => {
 });
 function dragOrder() {
     // drag and reorder
-    let savedTasks = JSON.parse(localStorage.getItem('tasks'))||[];
+    let savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
     const taskList = document.querySelector('#taskList')
     const items = taskList.querySelectorAll(".item");
     items.forEach((item) => {
@@ -157,13 +172,13 @@ function dragOrder() {
     taskList.addEventListener("dragenter", (e) => e.preventDefault());
 
 }
-function updateLocalStorage(){
-    localStorage.clear();
-    let savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    let updatedTasks = [...document.querySelectorAll('.task-box')];
-    for(let i =0; i<updatedTasks.length;i++){
-        savedTasks[i]= updatedTasks[i].value;
+function updateLocalStorage(key='tasks',value='.task-box') {
+    // localStorage.clear();
+    let savedTasks = JSON.parse(localStorage.getItem(key)) || [];
+    let updatedTasks = [...document.querySelectorAll(value)];
+    for (let i = 0; i < updatedTasks.length; i++) {
+        savedTasks[i] = updatedTasks[i].value;
     }
-    localStorage.setItem('tasks',JSON.stringify(savedTasks));
-    
+    localStorage.setItem(key, JSON.stringify(savedTasks));
+
 }
