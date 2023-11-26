@@ -26,13 +26,15 @@
             </h1>
         </div>
 
-        <div class="container task-container d-flex flex-column justify-content-evenly" id="">
+        <div class="container task-container" id="">
+            
             <div class="allLists">
-                <select id="listDropdown" class="form-select bg-black border-2 border-white text-white" aria-label="Make new list">
+                <select id="listDropdown" class="form-select bg-black border-2 border-white text-white mb-3" aria-label="Make new list">
                     <option value = "" disabled selected>select a list:</option>
                     <option value="add">+NewList </option>
                 </select>
             </div>
+            <button class="btn text-danger delete">delete</button>
             <hr>
             <div class="noTasks">
                 <p class="lead m-0">No tasks</p>

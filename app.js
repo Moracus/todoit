@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     displayLists(savedLists);
 
 })
+const delete_btn = document.querySelector(".delete");
+delete_btn.addEventListener('click', deleteList)
 const taskContainer = document.querySelector(".task-container");
 taskContainer.addEventListener('keyup', (e) => {
     if (e.key === "Enter" && e.target.classList.contains('task-box')) {
@@ -25,18 +27,18 @@ function listChange() {
             // it with new option
             listDropdown.add(newListOption, listDropdown.options[1]);
             listDropdown.value = newListName;
-            updateLocalStorage(newListName, null)//make a new key in local storage
+            updateLocalStorage(newListName)//make a new key in local storage
             // passed null cuz we don't wan't any tasks assigned at first
-            
+
             // clear taskList-reset
             const taskList = taskContainer.querySelector('#taskList');
-            taskList.innerHTML=""
-            
+            taskList.innerHTML = ""
+
 
         }
     }
-    else{
-        let savedTasks =  JSON.parse(localStorage.getItem(selectedValue))||[];
+    else {
+        let savedTasks = JSON.parse(localStorage.getItem(selectedValue)) || [];
         displayTasks(savedTasks);
     }
 
@@ -124,12 +126,12 @@ taskContainer.addEventListener('change', (e) => {
     }
 })
 
-function displayLists(lists){
-    lists.forEach((list)=>{
+function displayLists(lists) {
+    lists.forEach((list) => {
         const option = document.createElement('option');
-        option.value=list;
+        option.value = list;
         option.text = list;
-        listDropdown.add(option,listDropdown.options[1])
+        listDropdown.add(option, listDropdown.options[1])
 
     })
 }
@@ -137,7 +139,7 @@ function displayLists(lists){
 function displayTasks(tasks) {
     let noTasks = document.querySelector(".noTasks")
     const taskList = document.querySelector('#taskList');//ul
-    taskList.innerHTML="";//for switching between lists
+    taskList.innerHTML = "";//for switching between lists
     tasks.forEach(task => {
         const li = newListItem(); // returns new li element
         li.querySelector('.task-box').value = task;
@@ -147,11 +149,20 @@ function displayTasks(tasks) {
         dragOrder();
 
     });
-    if (tasks.length === 1 || tasks.length === 0) {
+    if (tasks.length === 0) {
         noTasks.style.display = 'block';
     }
     else {
         noTasks.style.display = 'none';
+    }
+}
+
+
+function deleteList() {
+    if (confirm("This will delete the selected list,\nand all its tasks")) {
+        console.log(listDropdown.value);
+        delete localStorage[listDropdown.value];
+        listDropdown.remove(listDropdown.selectedIndex);
     }
 }
 
@@ -184,6 +195,7 @@ function dragOrder() {
 
     });
     const intisortableList = (e) => {
+        let selectedList = listDropdown.value;
         const draggingItem = taskList.querySelector(".dragging");//getting the current dragging element
         e.preventDefault()
         //siblings will be an array containing all the elements with the-
@@ -195,7 +207,7 @@ function dragOrder() {
         })
         taskList.insertBefore(draggingItem, nextSibling);
         // update the saved array
-        updateLocalStorage();
+        updateLocalStorage(selectedList, ".task-box");
 
 
     }
@@ -203,10 +215,13 @@ function dragOrder() {
     taskList.addEventListener("dragenter", (e) => e.preventDefault());
 
 }
-function updateLocalStorage(key = 'tasks', value = '.task-box') {
+function updateLocalStorage(key, value = "") {
     // localStorage.clear();
     let savedTasks = JSON.parse(localStorage.getItem(key)) || [];
-    let updatedTasks = [...document.querySelectorAll(value)];
+    let updatedTasks = []
+    if (value !== "") {
+        updatedTasks = [...document.querySelectorAll(value)];
+    }
     for (let i = 0; i < updatedTasks.length; i++) {
         savedTasks[i] = updatedTasks[i].value;
     }

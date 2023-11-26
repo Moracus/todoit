@@ -98,3 +98,8 @@ ul {
     border-color: white;
     transition: 0.3s;
 }
+.delete{
+    margin-left: 30em;
+    padding-top: revert;
+    padding-bottom: revert;
+}
