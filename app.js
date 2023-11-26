@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    displayTasks(savedTasks)
+    const savedLists = Object.keys(localStorage);
+    displayLists(savedLists);
 
 })
 const taskContainer = document.querySelector(".task-container");
@@ -25,11 +25,25 @@ function listChange() {
             // it with new option
             listDropdown.add(newListOption, listDropdown.options[1]);
             listDropdown.value = newListName;
-            updateLocalStorage('allLists','.super-list')
+            updateLocalStorage(newListName, null)//make a new key in local storage
+            // passed null cuz we don't wan't any tasks assigned at first
+            
+            // clear taskList-reset
+            const taskList = taskContainer.querySelector('#taskList');
+            taskList.innerHTML=""
+            
+
         }
+    }
+    else{
+        let savedTasks =  JSON.parse(localStorage.getItem(selectedValue))||[];
+        displayTasks(savedTasks);
     }
 
 }
+
+
+
 function newListItem(value = "") {
     const newLi = document.createElement('li');
     newLi.innerHTML = `<div class="input-group mb-3 list-item">
@@ -47,9 +61,11 @@ function newListItem(value = "") {
 
 }
 function addTask() {
+    let selectedList = listDropdown.value;
+    let tasks = JSON.parse(localStorage.getItem(selectedList)) || [];
     let addTaskBtn = document.querySelector(".btn")
     let noTasks = document.querySelector(".noTasks")
-    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
     const taskList = document.querySelector('#taskList');//ul
     noTasks.style.display = 'none';
     let newLi = newListItem();
@@ -66,17 +82,19 @@ function addTask() {
     dragOrder();
 
     // updating local storage
-    const inputTextList = document.querySelectorAll('.task-box')
-    let requiredIndex = inputTextList.length - 2;
-    if (inputTextList[requiredIndex]) {
-        let toPush = inputTextList[requiredIndex].value;
-        if (tasks[tasks.length - 1] !== toPush)
-            tasks.push(toPush);
+    if (selectedList != 'add') {
+        const inputTextList = document.querySelectorAll('.task-box')
+        let requiredIndex = inputTextList.length - 2;
+        if (inputTextList[requiredIndex]) {
+            let toPush = inputTextList[requiredIndex].value;
+            if (tasks[tasks.length - 1] !== toPush)
+                tasks.push(toPush);
 
+        }
+
+        // save the updated array to localstorage
+        localStorage.setItem(selectedList, JSON.stringify(tasks));
     }
-
-    // save the updated array to localstorage
-    localStorage.setItem('tasks', JSON.stringify(tasks));
 
 }
 
@@ -85,11 +103,12 @@ function addTask() {
 taskContainer.addEventListener('change', (e) => {
     const checkbox = e.target;
     taskList = document.querySelector('#taskList');
+    const selectedList = listDropdown.value;
     // console.log(checkbox);
     if (checkbox.classList.contains('form-check-input') && checkbox.checked) {
         // Find the closest li element containing the checked checkbox
         let liToRemove = checkbox.closest('li');
-        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        let tasks = JSON.parse(localStorage.getItem(selectedList)) || [];
         // Check if the checkbox is within an li element
         if (liToRemove) {
             // Remove the li element from the taskList
@@ -100,13 +119,25 @@ taskContainer.addEventListener('change', (e) => {
             // save the updated task array
 
             taskList.removeChild(liToRemove);
-            localStorage.setItem('tasks', JSON.stringify(tasks));
+            localStorage.setItem(selectedList, JSON.stringify(tasks));
         }
     }
 })
+
+function displayLists(lists){
+    lists.forEach((list)=>{
+        const option = document.createElement('option');
+        option.value=list;
+        option.text = list;
+        listDropdown.add(option,listDropdown.options[1])
+
+    })
+}
+
 function displayTasks(tasks) {
     let noTasks = document.querySelector(".noTasks")
-    const taskList = document.querySelector('#taskList');
+    const taskList = document.querySelector('#taskList');//ul
+    taskList.innerHTML="";//for switching between lists
     tasks.forEach(task => {
         const li = newListItem(); // returns new li element
         li.querySelector('.task-box').value = task;
@@ -172,7 +203,7 @@ function dragOrder() {
     taskList.addEventListener("dragenter", (e) => e.preventDefault());
 
 }
-function updateLocalStorage(key='tasks',value='.task-box') {
+function updateLocalStorage(key = 'tasks', value = '.task-box') {
     // localStorage.clear();
     let savedTasks = JSON.parse(localStorage.getItem(key)) || [];
     let updatedTasks = [...document.querySelectorAll(value)];
@@ -182,3 +213,4 @@ function updateLocalStorage(key='tasks',value='.task-box') {
     localStorage.setItem(key, JSON.stringify(savedTasks));
 
 }
+//  {key:[{list1:[tasks1,task2]},]}
