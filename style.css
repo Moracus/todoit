@@ -86,7 +86,7 @@ ul {
 }
 
 .btn {
-    transition: 0.3s;
+    transition: 0.2s;
     border: 2px solid white;
     background-color: black;
     border-radius: 10px;
@@ -96,7 +96,7 @@ ul {
     border-width:2px 2px 4px 4px;
     border-style: solid;
     border-color: white;
-    transition: 0.3s;
+    transition: 0.2s;
 }
 .delete{
     margin-left: 30em;

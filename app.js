@@ -1,11 +1,17 @@
+
+const deleteBtn = document.querySelector(".delete");
+const taskContainer = document.querySelector(".task-container");
+const addTaskBtn = document.querySelector(".add-task")
 document.addEventListener('DOMContentLoaded', () => {
+    hideElement(deleteBtn);
+    hideElement(addTaskBtn);
     const savedLists = Object.keys(localStorage);
     displayLists(savedLists);
 
 })
-const delete_btn = document.querySelector(".delete");
-delete_btn.addEventListener('click', deleteList)
-const taskContainer = document.querySelector(".task-container");
+
+deleteBtn.addEventListener('click', deleteList)
+
 taskContainer.addEventListener('keyup', (e) => {
     if (e.key === "Enter" && e.target.classList.contains('task-box')) {
         addTask();
@@ -17,6 +23,7 @@ function listChange() {
     // console.log("heloooooo")
     const selectedValue = listDropdown.value;
     if (selectedValue === 'add') {
+        hideElement(deleteBtn);
         const newListName = prompt("Enter the name of this list: ");
         if (newListName) {
             const newListOption = document.createElement('option');
@@ -33,18 +40,30 @@ function listChange() {
             // clear taskList-reset
             const taskList = taskContainer.querySelector('#taskList');
             taskList.innerHTML = ""
+            showElement(deleteBtn);
+            showElement(addTaskBtn);
 
 
         }
     }
     else {
+        showElement(deleteBtn);
+        showElement(addTaskBtn);
         let savedTasks = JSON.parse(localStorage.getItem(selectedValue)) || [];
         displayTasks(savedTasks);
     }
 
 }
 
-
+function hideElement(element) {
+    element.style.display = 'none';
+}
+function showElement(element) {
+    element.style.display = 'block';
+}
+function noOfLists() {
+    return listDropdown.options.length - 2
+}
 
 function newListItem(value = "") {
     const newLi = document.createElement('li');
@@ -65,7 +84,7 @@ function newListItem(value = "") {
 function addTask() {
     let selectedList = listDropdown.value;
     let tasks = JSON.parse(localStorage.getItem(selectedList)) || [];
-    let addTaskBtn = document.querySelector(".btn")
+
     let noTasks = document.querySelector(".noTasks")
 
     const taskList = document.querySelector('#taskList');//ul
@@ -117,7 +136,7 @@ taskContainer.addEventListener('change', (e) => {
             tasks = tasks.filter((task) => {
                 return task !== liToRemove.querySelector('.task-box').value.trim();
             })
-            console.log(tasks)
+            // console.log(tasks)
             // save the updated task array
 
             taskList.removeChild(liToRemove);
@@ -160,9 +179,17 @@ function displayTasks(tasks) {
 
 function deleteList() {
     if (confirm("This will delete the selected list,\nand all its tasks")) {
-        console.log(listDropdown.value);
+        // console.log(listDropdown.value);
         delete localStorage[listDropdown.value];
         listDropdown.remove(listDropdown.selectedIndex);
+        document.querySelector('#taskList').innerHTML = "";
+        console.log(noOfLists())
+    }
+
+    if(listDropdown.value=='add'){
+        listDropdown.value=''
+        hideElement(deleteBtn);
+        hideElement(addTaskBtn);
     }
 }
 
@@ -228,4 +255,3 @@ function updateLocalStorage(key, value = "") {
     localStorage.setItem(key, JSON.stringify(savedTasks));
 
 }
-//  {key:[{list1:[tasks1,task2]},]}
