@@ -19,23 +19,32 @@
 <body>
     <div class="container text-center">
         <div class="heading">
-            <h1 class="text-white mt-3 display-1"><span class="subhead" id="to">To</span><span>Do</span><small class="subhead fade-it" id="it">It</small>
+            <h1 class="text-white mt-3 display-1"><span class="subhead" id="to">To</span><span>Do</span><small
+                    class="subhead fade-it" id="it">It</small>
                 <span class="material-symbols-outlined md-50">check_circle</span>
 
             </h1>
         </div>
 
         <div class="container task-container" id="">
+            
+            <div class="allLists">
+                <select id="listDropdown" class="form-select bg-black border-2 border-white text-white mb-3" aria-label="Make new list">
+                    <option value = "" disabled selected>select a list:</option>
+                    <option value="add">+NewList </option>
+                </select>
+            </div>
+            <button class="btn text-danger delete">delete</button>
+            <hr>
             <div class="noTasks">
                 <p class="lead m-0">No tasks</p>
             </div>
             <ul id="taskList">
-                <img src="icons/grip-vertical.svg" alt="">
             </ul>
 
         </div>
-        <div>
-            <button class="btn btn-dark" onclick="addTask()">+ New Task</button>
+        <div class="add-task">
+            <button class="btn text-white" onclick="addTask()">+ New Task</button>
         </div>
 
 
